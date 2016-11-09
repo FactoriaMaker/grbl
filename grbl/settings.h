@@ -112,6 +112,15 @@ typedef struct {
   float homing_seek_rate;
   uint16_t homing_debounce_delay;
   float homing_pulloff;
+  
+    //Current settings
+  #ifdef STEP_CURRENT_POT
+    float current_x;
+    float current_y;
+    float current_z;
+  #endif
+  
+  
 } settings_t;
 extern settings_t settings;
 

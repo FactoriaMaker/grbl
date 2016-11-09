@@ -107,6 +107,26 @@ void settings_restore(uint8_t restore_flag) {
     settings.max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL);
     settings.max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL);
 
+        //current settings
+    #ifdef STEP_CURRENT_POT
+      #ifdef DEFAULT_X_CURRENT
+        settings.current_x = DEFAULT_X_CURRENT;
+      #else
+        settings.current_x = 0.5;
+      #endif
+      #ifdef DEFAULT_Y_CURRENT
+        settings.current_y = DEFAULT_Y_CURRENT;
+      #else
+        settings.current_y = 0.5;
+      #endif
+      #ifdef DEFAULT_Z_CURRENT
+        settings.current_z = DEFAULT_Z_CURRENT;
+      #else
+        settings.current_z = 0.5;
+      #endif
+    #endif
+
+    
     write_global_settings();
   }
 
@@ -194,6 +214,9 @@ uint8_t read_global_settings() {
 
 // A helper method to set settings from command line
 uint8_t settings_store_global_setting(uint8_t parameter, float value) {
+    
+    
+    
   if (value < 0.0) { return(STATUS_NEGATIVE_VALUE); }
   if (parameter >= AXIS_SETTINGS_START_VAL) {
     // Store axis configuration. Axis numbering sequence set by AXIS_SETTING defines.
@@ -229,7 +252,11 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
     }
   } else {
     // Store non-axis Grbl settings
+    
+    
     uint8_t int_value = trunc(value);
+    
+  
     switch(parameter) {
       case 0:
         if (int_value < 3) { return(STATUS_SETTING_STEP_PULSE_MIN); }
@@ -296,6 +323,17 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
           return(STATUS_SETTING_DISABLED);
         #endif
         break;
+      #ifdef STEP_CURRENT_POT
+        case 90: 
+          settings.current_x = value; current_init();
+          break;
+        case 91: 
+          settings.current_y = value; current_init();
+          break;
+        case 92: 
+          settings.current_z = value; current_init();
+          break;
+      #endif
       default:
         return(STATUS_INVALID_STATEMENT);
     }

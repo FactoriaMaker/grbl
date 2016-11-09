@@ -311,6 +311,13 @@ void report_grbl_settings() {
     #else
       printPgmString(PSTR(" (rpm min)\r\n$32=0 (laser mode, bool)\r\n"));
     #endif
+    
+    #ifdef STEP_CURRENT_POT
+      printPgmString(PSTR(" (X (A))\r\n$200=")); printFloat(settings.current_x,N_DECIMAL_SETTINGVALUE);
+      printPgmString(PSTR(" (Y (A))\r\n$201=")); printFloat(settings.current_y,N_DECIMAL_SETTINGVALUE);
+      printPgmString(PSTR(" (Z (A))\r\n$202=")); printFloat(settings.current_z,N_DECIMAL_SETTINGVALUE);
+    #endif
+    
     // Print axis settings
     uint8_t idx, set_idx;
     uint8_t val = AXIS_SETTINGS_START_VAL;
@@ -350,18 +357,35 @@ void report_grbl_settings() {
     report_util_uint8_setting(4,bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE));
     report_util_uint8_setting(5,bit_istrue(settings.flags,BITFLAG_INVERT_LIMIT_PINS));
     report_util_uint8_setting(6,bit_istrue(settings.flags,BITFLAG_INVERT_PROBE_PIN));
-    report_util_uint8_setting(10,settings.status_report_mask);
-    report_util_float_setting(11,settings.junction_deviation,N_DECIMAL_SETTINGVALUE);
-    report_util_float_setting(12,settings.arc_tolerance,N_DECIMAL_SETTINGVALUE);
+   
     report_util_uint8_setting(13,bit_istrue(settings.flags,BITFLAG_REPORT_INCHES));
     report_util_uint8_setting(20,bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE));
     report_util_uint8_setting(21,bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE));
-    report_util_uint8_setting(22,bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE));
-    report_util_uint8_setting(23,settings.homing_dir_mask);
-    report_util_float_setting(24,settings.homing_feed_rate,N_DECIMAL_SETTINGVALUE);
-    report_util_float_setting(25,settings.homing_seek_rate,N_DECIMAL_SETTINGVALUE);
-    report_util_uint8_setting(26,settings.homing_debounce_delay);
-    report_util_float_setting(27,settings.homing_pulloff,N_DECIMAL_SETTINGVALUE);
+    
+    report_util_uint8_setting(10,settings.status_report_mask);
+    report_util_float_setting(11,settings.junction_deviation,N_DECIMAL_SETTINGVALUE);
+    report_util_float_setting(12,settings.arc_tolerance,N_DECIMAL_SETTINGVALUE);
+      
+    
+    
+    #ifdef STEP_CURRENT_POT
+      report_util_float_setting(90, settings.current_x,N_DECIMAL_SETTINGVALUE);
+      report_util_float_setting(91, settings.current_y,N_DECIMAL_SETTINGVALUE);
+      report_util_float_setting(92, settings.current_z,N_DECIMAL_SETTINGVALUE);
+    #endif   
+    #ifdef DEFAULT_HOMING_ENABLE
+
+      
+      #if DEFAULT_HOMING_ENABLE==1
+      report_util_uint8_setting(22,bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE));
+      report_util_uint8_setting(23,settings.homing_dir_mask);
+      report_util_float_setting(24,settings.homing_feed_rate,N_DECIMAL_SETTINGVALUE);
+      report_util_float_setting(25,settings.homing_seek_rate,N_DECIMAL_SETTINGVALUE);
+      report_util_uint8_setting(26,settings.homing_debounce_delay);
+      report_util_float_setting(27,settings.homing_pulloff,N_DECIMAL_SETTINGVALUE);
+      #endif
+    #endif
+    
     report_util_float_setting(30,settings.rpm_max,N_DECIMAL_RPMVALUE);
     report_util_float_setting(31,settings.rpm_min,N_DECIMAL_RPMVALUE);
     #ifdef VARIABLE_SPINDLE

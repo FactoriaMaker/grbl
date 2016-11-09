@@ -46,7 +46,7 @@
 #include "defaults.h"
 #include "cpu_map.h"
 #include "planner.h"
-#include "coolant_control.h"
+    #include "coolant_control.h"
 #include "eeprom.h"
 #include "gcode.h"
 #include "limits.h"
@@ -60,6 +60,11 @@
 #include "spindle_control.h"
 #include "stepper.h"
 #include "jog.h"
+
+#ifdef STEP_CURRENT_POT
+    #include "twi.h"
+    #include "current.h"
+#endif
 
 // ---------------------------------------------------------------------------------------
 // COMPILE-TIME ERROR CHECKING OF DEFINE VALUES:
